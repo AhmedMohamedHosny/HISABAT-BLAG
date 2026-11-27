@@ -16,23 +16,11 @@ const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 
-// أسماء المستخدمين الخاصة بالمالك (يمكنك إضافة أكثر من اسم هنا)
-export const ADMIN_USERNAMES = ["admin", "omar"];
-const EMAIL_DOMAIN = "hisabat-omar.app";
+// ضع هنا البريد الإلكتروني الخاص بالمالك (نفس الإيميل المسجل في Firebase Auth)
+export const ADMIN_EMAILS = ["admin@hisabat-omar.app"];
 
-export function usernameToEmail(username) {
-  const clean = username.trim().toLowerCase();
-  if (clean.includes("@")) return clean;
-  return `${clean}@${EMAIL_DOMAIN}`;
-}
-
-export function emailToUsername(email) {
-  if (!email) return "";
-  return email.split("@")[0].toLowerCase();
-}
-
-export function isValidUsername(username) {
-  return /^[a-zA-Z0-9._-]{3,25}$/.test(username.trim());
+export function isAdminEmail(email = "") {
+  return ADMIN_EMAILS.includes(email.trim().toLowerCase());
 }
 
 export function formatCurrency(amount) {
