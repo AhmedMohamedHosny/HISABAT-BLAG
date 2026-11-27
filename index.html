@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%231e40af'><path d='M3 21h18v-2H3v2zm2-4h14V7l-7-4-7 4v10z'/></svg>" />
 </head>
 <body>
 
@@ -47,12 +48,15 @@
       <!-- نموذج تسجيل الدخول -->
       <form id="login-form" class="auth-form">
         <div class="form-group">
-          <label for="login-username">اسم المستخدم</label>
-          <input type="text" id="login-username" placeholder="مثال: ahmed2026" autocomplete="username" required />
+          <label for="login-email">البريد الإلكتروني</label>
+          <input type="email" id="login-email" placeholder="name@example.com" dir="ltr" autocomplete="email" required />
         </div>
         <div class="form-group">
           <label for="login-password">كلمة المرور</label>
-          <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password" required />
+          <div class="password-wrap">
+            <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password" required />
+            <button type="button" class="toggle-pass" data-target="login-password">عرض</button>
+          </div>
         </div>
         <button type="submit" class="btn btn-primary btn-full" id="login-btn">دخول</button>
       </form>
@@ -66,7 +70,7 @@
         <div class="form-row">
           <div class="form-group">
             <label for="reg-phone">رقم الهاتف</label>
-            <input type="tel" id="reg-phone" placeholder="01xxxxxxxxx" required />
+            <input type="tel" id="reg-phone" placeholder="01xxxxxxxxx" dir="ltr" required />
           </div>
           <div class="form-group">
             <label for="reg-unit">رقم / اسم الوحدة</label>
@@ -74,12 +78,15 @@
           </div>
         </div>
         <div class="form-group">
-          <label for="reg-username">اسم المستخدم (حروف إنجليزية وأرقام فقط)</label>
-          <input type="text" id="reg-username" placeholder="مثال: ahmed_ali" dir="ltr" required />
+          <label for="reg-email">البريد الإلكتروني</label>
+          <input type="email" id="reg-email" placeholder="name@example.com" dir="ltr" autocomplete="email" required />
         </div>
         <div class="form-group">
           <label for="reg-password">كلمة المرور (6 أحرف على الأقل)</label>
-          <input type="password" id="reg-password" placeholder="••••••••" minlength="6" required />
+          <div class="password-wrap">
+            <input type="password" id="reg-password" placeholder="••••••••" minlength="6" autocomplete="new-password" required />
+            <button type="button" class="toggle-pass" data-target="reg-password">عرض</button>
+          </div>
         </div>
         <button type="submit" class="btn btn-primary btn-full" id="register-btn">إنشاء الحساب</button>
       </form>
@@ -218,7 +225,7 @@
       <div id="admin-clients-section" class="card hidden">
         <div class="card-header row-between">
           <h3>قائمة العملاء</h3>
-          <input type="search" id="client-search" class="input-sm" placeholder="ابحث بالاسم أو الوحدة أو الهاتف..." />
+          <input type="search" id="client-search" class="input-sm" placeholder="ابحث بالاسم أو البريد أو الوحدة أو الهاتف..." />
         </div>
         <div class="table-wrap">
           <table class="data-table">
