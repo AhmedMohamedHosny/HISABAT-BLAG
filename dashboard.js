@@ -250,7 +250,7 @@ function renderClientsTable() {
       (c.fullName || "").toLowerCase().includes(queryText) ||
       (c.unitName || "").toLowerCase().includes(queryText) ||
       (c.phone || "").toLowerCase().includes(queryText) ||
-      (c.username || "").toLowerCase().includes(queryText)
+(c.email || "").toLowerCase().includes(queryText)
     );
   });
 
@@ -267,8 +267,8 @@ function renderClientsTable() {
     return `
       <tr>
         <td>
-          <strong>${escapeHtml(c.fullName || c.username)}</strong><br />
-          <small class="muted-text">${escapeHtml(c.phone || "")} (${escapeHtml(c.username || "")})</small>
+<strong>${escapeHtml(c.fullName || c.email)}</strong><br />
+          <small class="muted-text">${escapeHtml(c.phone || "")} • ${escapeHtml(c.email || "")}</small>
         </td>
         <td>${escapeHtml(c.unitName || "غير محددة")}</td>
         <td>${formatCurrency(total)}</td>
@@ -295,7 +295,7 @@ function openEditClientModal(uid) {
   if (!client) return;
 
   document.getElementById("edit-client-uid").value = client.id;
-  document.getElementById("edit-client-title").textContent = client.fullName || client.username;
+document.getElementById("edit-client-title").textContent = client.fullName || client.email;
   document.getElementById("edit-unit").value = client.unitName || "";
   document.getElementById("edit-total").value = client.totalAmount || 0;
   document.getElementById("edit-paid").value = client.paidAmount || 0;
