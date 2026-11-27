@@ -265,21 +265,29 @@ function renderClientsTable() {
     const paid = Number(c.paidAmount) || 0;
     const remaining = Math.max(0, total - paid);
 
-    return `
-      <tr>
-        <td>
-<strong>${escapeHtml(c.fullName || c.email)}</strong><br />
-          <small class="muted-text">${escapeHtml(c.phone || "")} • ${escapeHtml(c.email || "")}</small>
+return `
+      <tr class="client-row">
+        <td class="cell-client">
+          <div class="client-name">${escapeHtml(c.fullName || c.email)}</div>
+          <div class="client-sub">${escapeHtml(c.phone || "")} • ${escapeHtml(c.email || "")}</div>
         </td>
-        <td>${escapeHtml(c.unitName || "غير محددة")}</td>
-        <td>${formatCurrency(total)}</td>
-        <td class="text-success"><strong>${formatCurrency(paid)}</strong></td>
-        <td class="text-danger">${formatCurrency(remaining)}</td>
-        <td>
-          ${c.nextPaymentAmount ? formatCurrency(c.nextPaymentAmount) : "-"}<br />
+        <td class="cell-unit">
+          <span class="unit-chip">${escapeHtml(c.unitName || "غير محددة")}</span>
+        </td>
+        <td class="cell-stat" data-label="الإجمالي">
+          <span class="stat-num">${formatCurrency(total)}</span>
+        </td>
+        <td class="cell-stat cell-paid text-success" data-label="المدفوع">
+          <strong class="stat-num">${formatCurrency(paid)}</strong>
+        </td>
+        <td class="cell-stat cell-rem text-danger" data-label="المتبقي">
+          <strong class="stat-num">${formatCurrency(remaining)}</strong>
+        </td>
+        <td class="cell-next" data-label="الدفعة القادمة">
+          <strong class="next-num">${c.nextPaymentAmount ? formatCurrency(c.nextPaymentAmount) : "-"}</strong>
           <small class="muted-text">${formatDate(c.nextPaymentDate)}</small>
         </td>
-        <td>
+        <td class="cell-action">
           <button class="btn btn-ghost btn-sm edit-client-btn" data-uid="${c.id}">تعديل</button>
         </td>
       </tr>
