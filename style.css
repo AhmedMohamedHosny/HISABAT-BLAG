@@ -814,3 +814,127 @@ select:focus {
   background: rgba(255, 255, 255, 0.88);
   backdrop-filter: blur(8px);
 }
+/* ==================== توسيع عرض لوحة التحكم لعدم قص الجدول ==================== */
+.topbar-inner,
+.container {
+  max-width: 1240px;
+}
+
+/* ==================== أنيميشن شاشة تسجيل الدخول ==================== */
+@keyframes bgFloat {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes authEntrance {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes iconFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+@keyframes formFade {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.auth-wrapper {
+  background-size: 200% 200%;
+  animation: bgFloat 14s ease infinite;
+}
+
+.auth-card {
+  animation: authEntrance 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.brand-icon {
+  animation: iconFloat 3.6s ease-in-out infinite;
+}
+
+.auth-form:not(.hidden) {
+  animation: formFade 0.28s ease-out;
+}
+
+/* ==================== أنيميشن الشكل العام داخل اللوحة ==================== */
+@keyframes cardPop {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulseDot {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(5, 150, 105, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(5, 150, 105, 0);
+  }
+}
+
+.brand-dot {
+  animation: pulseDot 2.4s ease-in-out infinite;
+}
+
+/* ظهور متتابع لكروت الإحصائيات */
+.stats-grid .stat-card {
+  opacity: 0;
+  animation: cardPop 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.stats-grid .stat-card:nth-child(1) { animation-delay: 0.04s; }
+.stats-grid .stat-card:nth-child(2) { animation-delay: 0.1s; }
+.stats-grid .stat-card:nth-child(3) { animation-delay: 0.16s; }
+.stats-grid .stat-card:nth-child(4) { animation-delay: 0.22s; }
+
+/* حركة ناعمة للتنقل بين الأقسام والكروت */
+.card:not(.hidden),
+.next-payment-banner {
+  animation: cardPop 0.35s ease-out;
+}
+
+.payment-item {
+  transition: transform 0.18s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.payment-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.05);
+}
+
+.data-table tbody tr {
+  transition: background-color 0.16s ease;
+}
+
+.modal-backdrop:not(.hidden) {
+  animation: formFade 0.18s ease-out;
+}
+
+/* احترام إعدادات تقليل الحركة لدى المستخدمين */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
