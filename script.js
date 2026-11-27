@@ -242,8 +242,8 @@ function initClientPortal(uid) {
         <div class="payment-meta">
           <span class="payment-amount">${formatCurrency(p.amount)}</span>
           <span class="muted-text">
-            ${escapeHtml(p.method || "")} • ${formatDate(p.createdAt)}
-            ${p.note ? `• ${escapeHtml(p.note)}` : ""}
+${formatDate(p.createdAt)}
+${p.note ? `• ${escapeHtml(p.note)}` : ""}
           </span>
         </div>
         <div class="payment-actions">
@@ -297,7 +297,6 @@ document.getElementById("payment-form").addEventListener("submit", async (e) => 
   }
 
   const amount = Number(document.getElementById("pay-amount").value);
-  const method = document.getElementById("pay-method").value;
   const note = document.getElementById("pay-note").value.trim();
   const btn = document.getElementById("submit-payment-btn");
 
@@ -310,7 +309,7 @@ document.getElementById("payment-form").addEventListener("submit", async (e) => 
 userName: currentUserProfile?.fullName || currentUserProfile?.email || "عميل",
       unitName: currentUserProfile?.unitName || "",
       amount,
-      method,
+      
       note,
       receiptImage: selectedReceiptBase64,
       status: "pending",
