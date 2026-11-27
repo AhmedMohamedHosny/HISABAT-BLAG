@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>حسابات العقارات | إدارة الأقساط والعملاء</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- شاشة التحميل المبدئية -->
+  <div id="app-loader" class="loader-overlay">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- إشعار Toast -->
+  <div id="toast" class="toast"></div>
+
+  <!-- ==================== 1. شاشة تسجيل الدخول وإنشاء الحساب ==================== -->
+  <main id="auth-view" class="auth-wrapper hidden">
+    <div class="auth-card fade-up">
+      <div class="auth-brand">
+        <div class="brand-icon">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 21h18"></path>
+            <path d="M5 21V7l8-4v18"></path>
+            <path d="M19 21V11l-6-4"></path>
+            <path d="M9 9v.01"></path>
+            <path d="M9 12v.01"></path>
+            <path d="M9 15v.01"></path>
+            <path d="M9 18v.01"></path>
+          </svg>
+        </div>
+        <h1>بوابة حسابات العقارات</h1>
+        <p>متابعة الأقساط والدفعات بكل وضوح وسهولة</p>
+      </div>
+
+      <!-- التبديل بين الدخول والتسجيل -->
+      <div class="auth-tabs">
+        <button type="button" class="auth-tab active" data-tab="login">تسجيل الدخول</button>
+        <button type="button" class="auth-tab" data-tab="register">إنشاء حساب جديد</button>
+      </div>
+
+      <!-- نموذج تسجيل الدخول -->
+      <form id="login-form" class="auth-form">
+        <div class="form-group">
+          <label for="login-username">اسم المستخدم</label>
+          <input type="text" id="login-username" placeholder="مثال: ahmed2026" autocomplete="username" required />
+        </div>
+        <div class="form-group">
+          <label for="login-password">كلمة المرور</label>
+          <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password" required />
+        </div>
+        <button type="submit" class="btn btn-primary btn-full" id="login-btn">دخول</button>
+      </form>
+
+      <!-- نموذج إنشاء حساب عميل -->
+      <form id="register-form" class="auth-form hidden">
+        <div class="form-group">
+          <label for="reg-name">الاسم بالكامل</label>
+          <input type="text" id="reg-name" placeholder="مثال: أحمد محمد علي" required />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="reg-phone">رقم الهاتف</label>
+            <input type="tel" id="reg-phone" placeholder="01xxxxxxxxx" required />
+          </div>
+          <div class="form-group">
+            <label for="reg-unit">رقم / اسم الوحدة</label>
+            <input type="text" id="reg-unit" placeholder="مثال: شقة 12 - برج النيل" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="reg-username">اسم المستخدم (حروف إنجليزية وأرقام فقط)</label>
+          <input type="text" id="reg-username" placeholder="مثال: ahmed_ali" dir="ltr" required />
+        </div>
+        <div class="form-group">
+          <label for="reg-password">كلمة المرور (6 أحرف على الأقل)</label>
+          <input type="password" id="reg-password" placeholder="••••••••" minlength="6" required />
+        </div>
+        <button type="submit" class="btn btn-primary btn-full" id="register-btn">إنشاء الحساب</button>
+      </form>
+    </div>
+  </main>
+
+  <!-- ==================== 2. واجهة العميل ==================== -->
+  <section id="client-view" class="app-layout hidden">
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div class="topbar-brand">
+          <span class="brand-dot"></span>
+          <div>
+            <strong id="client-greeting">مرحباً</strong>
+            <small id="client-unit-label" class="muted-text"></small>
+          </div>
+        </div>
+        <button class="btn btn-ghost btn-sm logout-btn">تسجيل الخروج</button>
+      </div>
+    </header>
+
+    <div class="container fade-up">
+      <!-- بطاقة الدفعة القادمة -->
+      <div class="next-payment-banner">
+        <div>
+          <span class="badge badge-info">الدفعة القادمة</span>
+          <h2 id="client-next-amount">0 ج.م</h2>
+          <p class="muted-text">موعد الاستحقاق: <strong id="client-next-date">غير محدد</strong></p>
+        </div>
+        <button id="open-payment-modal-btn" class="btn btn-primary">
+          + سداد دفعة ورفع إيصال
+        </button>
+      </div>
+
+      <!-- ملخص الحساب -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-label">إجمالي قيمة الوحدة</span>
+          <strong class="stat-value" id="client-total">0 ج.م</strong>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">إجمالي المدفوع</span>
+          <strong class="stat-value text-success" id="client-paid">0 ج.م</strong>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">المتبقي</span>
+          <strong class="stat-value text-danger" id="client-remaining">0 ج.م</strong>
+        </div>
+      </div>
+
+      <!-- شريط التقدم -->
+      <div class="card progress-card">
+        <div class="progress-header">
+          <span>نسبة السداد</span>
+          <strong id="client-progress-text">0%</strong>
+        </div>
+        <div class="progress-track">
+          <div id="client-progress-bar" class="progress-fill" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <!-- سجل الدفعات -->
+      <div class="card">
+        <div class="card-header">
+          <h3>سجل الدفعات والإيصالات</h3>
+        </div>
+        <div id="client-payments-list" class="payments-list">
+          <p class="empty-state">لا توجد دفعات مسجلة حتى الآن.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 3. لوحة تحكم المالك ==================== -->
+  <section id="admin-view" class="app-layout hidden">
+    <header class="topbar">
+      <div class="topbar-inner">
+        <div class="topbar-brand">
+          <span class="brand-dot admin-dot"></span>
+          <div>
+            <strong>لوحة تحكم المالك</strong>
+            <small class="muted-text">متابعة العملاء والإيصالات الواردة</small>
+          </div>
+        </div>
+        <button class="btn btn-ghost btn-sm logout-btn">تسجيل الخروج</button>
+      </div>
+    </header>
+
+    <div class="container fade-up">
+      <!-- إحصائيات سريعة -->
+      <div class="stats-grid stats-grid-4">
+        <div class="stat-card">
+          <span class="stat-label">عدد العملاء</span>
+          <strong class="stat-value" id="admin-clients-count">0</strong>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">إجمالي المحصّل</span>
+          <strong class="stat-value text-success" id="admin-total-collected">0 ج.م</strong>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">إجمالي المتبقي</span>
+          <strong class="stat-value text-danger" id="admin-total-remaining">0 ج.م</strong>
+        </div>
+        <div class="stat-card highlight-card">
+          <span class="stat-label">إيصالات بانتظار المراجعة</span>
+          <strong class="stat-value text-warning" id="admin-pending-count">0</strong>
+        </div>
+      </div>
+
+      <!-- تبويبات لوحة التحكم -->
+      <div class="segmented-tabs">
+        <button class="seg-tab active" data-admin-tab="payments">
+          الإيصالات والدفعات
+          <span id="pending-pill" class="pill hidden">0</span>
+        </button>
+        <button class="seg-tab" data-admin-tab="clients">إدارة العملاء</button>
+      </div>
+
+      <!-- قسم مراجعة الدفعات -->
+      <div id="admin-payments-section" class="card">
+        <div class="card-header row-between">
+          <h3>طلبات الدفع الواردة</h3>
+          <select id="payment-filter" class="input-sm">
+            <option value="all">الكل</option>
+            <option value="pending" selected>قيد المراجعة فقط</option>
+            <option value="approved">المؤكدة</option>
+            <option value="rejected">المرفوضة</option>
+          </select>
+        </div>
+        <div id="admin-payments-list" class="payments-list">
+          <p class="empty-state">لا توجد طلبات دفع حالياً.</p>
+        </div>
+      </div>
+
+      <!-- قسم إدارة العملاء -->
+      <div id="admin-clients-section" class="card hidden">
+        <div class="card-header row-between">
+          <h3>قائمة العملاء</h3>
+          <input type="search" id="client-search" class="input-sm" placeholder="ابحث بالاسم أو الوحدة أو الهاتف..." />
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>العميل</th>
+                <th>الوحدة</th>
+                <th>الإجمالي</th>
+                <th>المدفوع</th>
+                <th>المتبقي</th>
+                <th>الدفعة القادمة</th>
+                <th>إجراء</th>
+              </tr>
+            </thead>
+            <tbody id="admin-clients-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== نافذة رفع إيصال الدفع (للعميل) ==================== -->
+  <div id="payment-modal" class="modal-backdrop hidden">
+    <div class="modal-card scale-in">
+      <div class="modal-header">
+        <h3>سداد دفعة جديدة</h3>
+        <button type="button" class="icon-close" data-close-modal="payment-modal">&times;</button>
+      </div>
+      <form id="payment-form" class="modal-body">
+        <div class="form-group">
+          <label for="pay-amount">المبلغ المدفوع (ج.م)</label>
+          <input type="number" id="pay-amount" min="1" step="any" placeholder="مثال: 15000" required />
+        </div>
+        <div class="form-group">
+          <label for="pay-method">طريقة الدفع</label>
+          <select id="pay-method" required>
+            <option value="إنستا باي (InstaPay)">إنستا باي (InstaPay)</option>
+            <option value="تحويل بنكي">تحويل بنكي</option>
+            <option value="فودافون كاش">فودافون كاش</option>
+            <option value="نقدي">نقدي</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="pay-receipt">صورة الإيصال (تصوير مباشر أو من المعرض)</label>
+          <label for="pay-receipt" class="upload-box" id="upload-box">
+            <span id="upload-text">اضغط هنا لتصوير أو اختيار صورة الإيصال</span>
+            <img id="receipt-preview" class="receipt-preview hidden" alt="معاينة الإيصال" />
+          </label>
+          <input type="file" id="pay-receipt" accept="image/*" capture="environment" class="hidden" required />
+        </div>
+        <div class="form-group">
+          <label for="pay-note">ملاحظات (اختياري)</label>
+          <input type="text" id="pay-note" placeholder="مثال: قسط شهر ديسمبر" />
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-ghost" data-close-modal="payment-modal">إلغاء</button>
+          <button type="submit" class="btn btn-primary" id="submit-payment-btn">إرسال الإيصال للمالك</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== نافذة تعديل حساب عميل (للمالك) ==================== -->
+  <div id="edit-client-modal" class="modal-backdrop hidden">
+    <div class="modal-card scale-in">
+      <div class="modal-header">
+        <h3>تعديل بيانات العميل: <span id="edit-client-title"></span></h3>
+        <button type="button" class="icon-close" data-close-modal="edit-client-modal">&times;</button>
+      </div>
+      <form id="edit-client-form" class="modal-body">
+        <input type="hidden" id="edit-client-uid" />
+        <div class="form-group">
+          <label for="edit-unit">اسم / رقم الوحدة</label>
+          <input type="text" id="edit-unit" placeholder="شقة 12 - الدور الرابع" />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="edit-total">إجمالي سعر الوحدة (ج.م)</label>
+            <input type="number" id="edit-total" min="0" step="any" required />
+          </div>
+          <div class="form-group">
+            <label for="edit-paid">إجمالي المدفوع (ج.م)</label>
+            <input type="number" id="edit-paid" min="0" step="any" required />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="edit-next-amount">قيمة الدفعة القادمة (ج.م)</label>
+            <input type="number" id="edit-next-amount" min="0" step="any" />
+          </div>
+          <div class="form-group">
+            <label for="edit-next-date">تاريخ الدفعة القادمة</label>
+            <input type="date" id="edit-next-date" />
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-ghost" data-close-modal="edit-client-modal">إلغاء</button>
+          <button type="submit" class="btn btn-primary" id="save-client-btn">حفظ التعديلات</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== نافذة تكبير صورة الإيصال ==================== -->
+  <div id="receipt-modal" class="modal-backdrop hidden">
+    <div class="modal-card modal-image-card scale-in">
+      <div class="modal-header">
+        <h3 id="receipt-modal-caption">صورة الإيصال</h3>
+        <button type="button" class="icon-close" data-close-modal="receipt-modal">&times;</button>
+      </div>
+      <div class="modal-image-body">
+        <img id="receipt-modal-img" src="" alt="إيصال الدفع" />
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="script.js"></script>
+</body>
+</html>
