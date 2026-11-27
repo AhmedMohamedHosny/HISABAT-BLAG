@@ -179,8 +179,9 @@ function renderAdminPayments() {
           </div>
           <span class="payment-amount">${formatCurrency(p.amount)}</span>
           <span class="muted-text">
-            ${escapeHtml(p.method || "")} • ${formatDate(p.createdAt)}
-            ${p.note ? `• ${escapeHtml(p.note)}` : ""}
+${formatDate(p.createdAt)}
+
+${p.note ? `• ${escapeHtml(p.note)}` : ""}
           </span>
         </div>
 
