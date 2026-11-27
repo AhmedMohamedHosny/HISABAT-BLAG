@@ -938,3 +938,422 @@ select:focus {
     transition-duration: 0.01ms !important;
   }
 }
+/* ==========================================================================
+   تطوير الشكل العام + تصميم الموبايل الاحترافي (Native App) + Dark Mode
+   ========================================================================== */
+
+:root {
+  color-scheme: light dark;
+}
+
+/* ثيم داكن احترافي مخصص بدل التعتيم العشوائي للمتصفح */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0b1120;
+    --surface: #111827;
+    --border: #1e293b;
+    --text: #f1f5f9;
+    --muted: #94a3b8;
+    --primary: #3b82f6;
+    --primary-hover: #2563eb;
+    --primary-soft: rgba(59, 130, 246, 0.14);
+    --success: #34d399;
+    --success-soft: rgba(16, 185, 129, 0.14);
+    --danger: #fb7185;
+    --danger-soft: rgba(244, 63, 94, 0.14);
+    --warning: #fbbf24;
+    --warning-soft: rgba(245, 158, 11, 0.14);
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+  }
+
+  .topbar {
+    background: rgba(15, 23, 42, 0.85);
+    border-bottom-color: rgba(51, 65, 85, 0.6);
+  }
+
+  input,
+  select {
+    background: #0f172a;
+    border-color: #334155;
+    color: var(--text);
+  }
+
+  input:focus,
+  select:focus {
+    background: #111827;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.22);
+  }
+
+  .auth-card {
+    border-color: rgba(51, 65, 85, 0.7);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+  }
+
+  .auth-tab.active {
+    background: #1e293b;
+    color: #fff;
+  }
+
+  .highlight-card {
+    border-color: rgba(251, 191, 36, 0.35);
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.14), rgba(17, 24, 39, 0.9));
+  }
+
+  .upload-box {
+    background: #0f172a;
+    border-color: #334155;
+  }
+
+  .btn-danger-outline {
+    border-color: rgba(251, 113, 133, 0.35);
+  }
+
+  .payment-item:hover {
+    border-color: #334155;
+  }
+}
+
+/* لمسات فخامة على كروت الإحصائيات والوحدات */
+.stat-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 14px;
+}
+
+.stat-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--primary));
+  opacity: 0.5;
+}
+
+.stat-card:nth-child(2)::before {
+  background: linear-gradient(90deg, transparent, var(--success));
+}
+
+.stat-card:nth-child(3)::before {
+  background: linear-gradient(90deg, transparent, var(--danger));
+}
+
+.stat-card.highlight-card::before {
+  background: linear-gradient(90deg, transparent, var(--warning));
+  opacity: 0.85;
+}
+
+.unit-chip {
+  display: inline-block;
+  background: var(--primary-soft);
+  color: var(--primary);
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.client-name {
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.4;
+}
+
+.client-sub {
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin-top: 2px;
+  direction: ltr;
+  text-align: right;
+  word-break: break-all;
+}
+
+/* لمعة خفيفة لشريط التقدم عند العميل */
+.progress-fill {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(90deg, var(--primary), #60a5fa);
+}
+
+.progress-fill::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.35),
+    transparent
+  );
+  transform: translateX(-100%);
+  animation: progressShimmer 2.4s infinite;
+}
+
+@keyframes progressShimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* أنيميشن ظهور الكروت والـ Bottom Sheet */
+@keyframes sheetUp {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes cardSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ==================== تصميم الموبايل العالمي (أقل من 768px) ==================== */
+@media (max-width: 768px) {
+  .topbar-inner {
+    padding: 12px 14px;
+  }
+
+  .container {
+    margin: 14px auto;
+    padding: 0 12px 42px;
+  }
+
+  /* 1. كروت الإحصائيات 2×2 مدمجة ومنظمة */
+  .stats-grid,
+  .stats-grid-4 {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  /* في شاشة العميل (3 كروت): الكارت الأول ياخد العرض كله */
+  #client-view .stats-grid .stat-card:first-child {
+    grid-column: 1 / -1;
+  }
+
+  .stat-card {
+    padding: 14px;
+  }
+
+  .stat-label {
+    font-size: 0.76rem;
+    margin-bottom: 4px;
+  }
+
+  .stat-value {
+    font-size: 1.05rem;
+    line-height: 1.3;
+  }
+
+  /* 2. التبويبات بعرض الشاشة بالكامل */
+  .segmented-tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+    padding: 5px;
+    margin-bottom: 14px;
+  }
+
+  .seg-tab {
+    justify-content: center;
+    padding: 10px 8px;
+    font-size: 0.86rem;
+  }
+
+  /* 3. تحويل جدول العملاء إلى كروت شيك بدون أي قص أو سحب أفقي */
+  #admin-clients-section {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+  }
+
+  #admin-clients-section .card-header {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow);
+  }
+
+  .table-wrap {
+    overflow-x: visible;
+  }
+
+  .data-table,
+  .data-table tbody {
+    display: block;
+    width: 100%;
+  }
+
+  .data-table thead {
+    display: none;
+  }
+
+  .data-table tbody {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .data-table tbody tr.client-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 15px;
+    box-shadow: var(--shadow);
+    animation: cardSlideIn 0.32s ease-out both;
+    transition: transform 0.16s ease, border-color 0.2s ease;
+  }
+
+  .data-table tbody tr.client-row:active {
+    transform: scale(0.985);
+  }
+
+  .data-table tbody tr.client-row td {
+    display: block;
+    padding: 0;
+    border: none;
+    white-space: normal;
+  }
+
+  /* اسم العميل وبياناته بعرض الكارت بالكامل */
+  .data-table td.cell-client {
+    grid-column: 1 / -1;
+  }
+
+  .client-name {
+    font-size: 0.98rem;
+  }
+
+  /* شارة الوحدة تحت الاسم */
+  .data-table td.cell-unit {
+    grid-column: 1 / -1;
+    margin-top: -2px;
+  }
+
+  /* شريط المبالغ الثلاثة (الإجمالي / المدفوع / المتبقي) */
+  .data-table td.cell-stat {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 8px 6px;
+    text-align: center;
+  }
+
+  .data-table td.cell-stat::before {
+    content: attr(data-label);
+    display: block;
+    font-size: 0.7rem;
+    color: var(--muted);
+    margin-bottom: 3px;
+    font-weight: 500;
+  }
+
+  .data-table td.cell-stat .stat-num {
+    font-size: 0.78rem;
+    font-weight: 700;
+    word-break: break-word;
+  }
+
+  /* أسفل الكارت: الدفعة القادمة + زر التعديل */
+  .data-table td.cell-next {
+    grid-column: 1 / 3;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-top: 6px;
+    border-top: 1px dashed var(--border);
+  }
+
+  .data-table td.cell-next::before {
+    content: attr(data-label);
+    font-size: 0.7rem;
+    color: var(--muted);
+  }
+
+  .data-table td.cell-next .next-num {
+    font-size: 0.88rem;
+  }
+
+  .data-table td.cell-action {
+    grid-column: 3 / 4;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-top: 6px;
+    border-top: 1px dashed var(--border);
+  }
+
+  .data-table td.cell-action .edit-client-btn {
+    width: 100%;
+    padding: 8px 10px;
+    background: var(--primary-soft);
+    color: var(--primary);
+    border-color: transparent;
+    font-weight: 700;
+  }
+
+  /* 4. تحويل النوافذ المنبثقة لـ Bottom Sheet مثل التطبيقات الأصلية */
+  .modal-backdrop {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .modal-card {
+    max-width: 100%;
+    border-radius: 22px 22px 0 0;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: sheetUp 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .modal-card::before {
+    content: "";
+    display: block;
+    width: 42px;
+    height: 4px;
+    background: var(--border);
+    border-radius: 999px;
+    margin: 10px auto 2px;
+  }
+
+  .modal-actions {
+    flex-direction: column-reverse;
+  }
+
+  .modal-actions .btn {
+    width: 100%;
+    padding: 12px;
+  }
+
+  /* تحسين كروت الدفعات على الموبايل */
+  .payment-item {
+    padding: 14px;
+    border-radius: 14px;
+  }
+
+  .payment-actions {
+    width: 100%;
+    justify-content: flex-end;
+    padding-top: 8px;
+    border-top: 1px dashed var(--border);
+  }
+}
