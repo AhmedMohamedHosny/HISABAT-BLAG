@@ -17,7 +17,7 @@ export const auth = getAuth(app);
 export const db = getFirestore(app);
 
 // ضع هنا البريد الإلكتروني الخاص بالمالك (نفس الإيميل المسجل في Firebase Auth)
-export const ADMIN_EMAILS = ["SalehShrf@gmail.com"];
+export const ADMIN_EMAILS = ["salehshrf@gmail.com"];
 
 export function isAdminEmail(email = "") {
   return ADMIN_EMAILS.includes(email.trim().toLowerCase());
