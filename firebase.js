@@ -25,7 +25,7 @@ export function isAdminEmail(email = "") {
 
 export function formatCurrency(amount) {
   const num = Number(amount) || 0;
-  return new Intl.NumberFormat("ar-EG").format(num) + " ج.م";
+return new Intl.NumberFormat("ar-SA").format(num) + " ر.س";
 }
 
 export function formatDate(dateStr) {
