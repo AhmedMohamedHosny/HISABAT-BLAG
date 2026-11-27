@@ -20,10 +20,7 @@ import {
 import {
   auth,
   db,
-  ADMIN_USERNAMES,
-  usernameToEmail,
-  emailToUsername,
-  isValidUsername,
+isAdminEmail,
   formatCurrency,
   formatDate,
   compressImage,
@@ -74,11 +71,19 @@ document.querySelectorAll(".auth-tab").forEach((tab) => {
     document.getElementById("register-form").classList.toggle("hidden", isLogin);
   });
 });
-
+// ==================== إظهار / إخفاء كلمة المرور ====================
+document.querySelectorAll(".toggle-pass").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const input = document.getElementById(btn.dataset.target);
+    const isHidden = input.type === "password";
+    input.type = isHidden ? "text" : "password";
+    btn.textContent = isHidden ? "إخفاء" : "عرض";
+  });
+});
 // ==================== تسجيل الدخول ====================
 document.getElementById("login-form").addEventListener("submit", async (e) => {
   e.preventDefault();
-  const username = document.getElementById("login-username").value.trim();
+  const email = document.getElementById("login-email").value.trim().toLowerCase();
   const password = document.getElementById("login-password").value;
   const btn = document.getElementById("login-btn");
 
@@ -86,11 +91,11 @@ document.getElementById("login-form").addEventListener("submit", async (e) => {
   btn.textContent = "جارٍ الدخول...";
 
   try {
-    await signInWithEmailAndPassword(auth, usernameToEmail(username), password);
+    await signInWithEmailAndPassword(auth, email, password);
     showToast("تم تسجيل الدخول بنجاح", "success");
   } catch (err) {
     console.error(err);
-    showToast("اسم المستخدم أو كلمة المرور غير صحيحة", "error");
+    showToast("البريد الإلكتروني أو كلمة المرور غير صحيحة", "error");
   } finally {
     btn.disabled = false;
     btn.textContent = "دخول";
@@ -103,17 +108,12 @@ document.getElementById("register-form").addEventListener("submit", async (e) =>
   const fullName = document.getElementById("reg-name").value.trim();
   const phone = document.getElementById("reg-phone").value.trim();
   const unitName = document.getElementById("reg-unit").value.trim();
-  const username = document.getElementById("reg-username").value.trim().toLowerCase();
+  const email = document.getElementById("reg-email").value.trim().toLowerCase();
   const password = document.getElementById("reg-password").value;
   const btn = document.getElementById("register-btn");
 
-  if (!isValidUsername(username)) {
-    showToast("اسم المستخدم يجب أن يحتوي على حروف إنجليزية وأرقام فقط (3 أحرف فأكثر)", "error");
-    return;
-  }
-
-  if (ADMIN_USERNAMES.includes(username)) {
-    showToast("اسم المستخدم هذا غير متاح", "error");
+  if (isAdminEmail(email)) {
+    showToast("هذا البريد مخصص للإدارة، استخدم تسجيل الدخول", "error");
     return;
   }
 
@@ -121,12 +121,12 @@ document.getElementById("register-form").addEventListener("submit", async (e) =>
   btn.textContent = "جارٍ إنشاء الحساب...";
 
   try {
-    const cred = await createUserWithEmailAndPassword(auth, usernameToEmail(username), password);
+    const cred = await createUserWithEmailAndPassword(auth, email, password);
     await setDoc(doc(db, "users", cred.user.uid), {
       fullName,
       phone,
       unitName: unitName || "قيد التحديد من المالك",
-      username,
+      email,
       role: "client",
       totalAmount: 0,
       paidAmount: 0,
@@ -138,7 +138,9 @@ document.getElementById("register-form").addEventListener("submit", async (e) =>
   } catch (err) {
     console.error(err);
     if (err.code === "auth/email-already-in-use") {
-      showToast("اسم المستخدم مسجل بالفعل، اختر اسماً آخر", "error");
+      showToast("هذا البريد الإلكتروني مسجل بالفعل", "error");
+    } else if (err.code === "auth/invalid-email") {
+      showToast("صيغة البريد الإلكتروني غير صحيحة", "error");
     } else if (err.code === "auth/weak-password") {
       showToast("كلمة المرور ضعيفة، يجب أن تكون 6 أحرف على الأقل", "error");
     } else {
@@ -171,7 +173,6 @@ onAuthStateChanged(auth, async (user) => {
     return;
   }
 
-  const username = emailToUsername(user.email);
   let userDocData = null;
 
   try {
@@ -181,8 +182,7 @@ onAuthStateChanged(auth, async (user) => {
     console.error(err);
   }
 
-  const isAdmin = ADMIN_USERNAMES.includes(username) || userDocData?.role === "admin";
-
+const isAdmin = isAdminEmail(user.email) || userDocData?.role === "admin";
   if (isAdmin) {
     showOnlyView(adminView);
     initAdminDashboard();
@@ -204,7 +204,7 @@ function initClientPortal(uid) {
     const remaining = Math.max(0, total - paid);
     const percent = total > 0 ? Math.min(100, Math.round((paid / total) * 100)) : 0;
 
-    document.getElementById("client-greeting").textContent = `أهلاً، ${currentUserProfile.fullName || currentUserProfile.username}`;
+    document.getElementById("client-greeting").textContent = `أهلاً، ${currentUserProfile.fullName || currentUserProfile.email}`;
     document.getElementById("client-unit-label").textContent = currentUserProfile.unitName || "";
 
     document.getElementById("client-next-amount").textContent = formatCurrency(currentUserProfile.nextPaymentAmount || 0);
@@ -307,7 +307,7 @@ document.getElementById("payment-form").addEventListener("submit", async (e) => 
   try {
     await addDoc(collection(db, "payments"), {
       userId: auth.currentUser.uid,
-      userName: currentUserProfile?.fullName || currentUserProfile?.username || "عميل",
+userName: currentUserProfile?.fullName || currentUserProfile?.email || "عميل",
       unitName: currentUserProfile?.unitName || "",
       amount,
       method,
