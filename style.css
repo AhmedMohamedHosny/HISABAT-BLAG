@@ -119,39 +119,47 @@ body {
 .toast.error { background: var(--danger); }
 
 /* ==================== شاشة تسجيل الدخول ==================== */
-.auth-wrapper {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
 
-.auth-card {
-  width: 100%;
-  max-width: 440px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 32px 28px;
-  box-shadow: var(--shadow);
-}
 
 .auth-brand {
   text-align: center;
   margin-bottom: 24px;
 }
 
+.auth-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  background:
+    radial-gradient(circle at 15% 15%, rgba(30, 64, 175, 0.08), transparent 40%),
+    radial-gradient(circle at 85% 85%, rgba(5, 150, 105, 0.07), transparent 40%),
+    var(--bg);
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 450px;
+  background: var(--surface);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  border-top: 4px solid var(--primary);
+  border-radius: 18px;
+  padding: 34px 30px;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.07), 0 2px 6px rgba(15, 23, 42, 0.03);
+}
+
 .brand-icon {
-  width: 52px;
-  height: 52px;
-  background: var(--primary-soft);
-  color: var(--primary);
-  border-radius: 14px;
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, var(--primary), #3b82f6);
+  color: #ffffff;
+  border-radius: 16px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
+  box-shadow: 0 8px 18px rgba(30, 64, 175, 0.22);
 }
 
 .auth-brand h1 {
@@ -742,4 +750,67 @@ select:focus {
   .stats-grid-4 {
     grid-template-columns: 1fr;
   }
+}
+/* تحسين الحقول وإظهار كلمة المرور */
+input,
+select {
+  background: #f8fafc;
+}
+
+input:focus,
+select:focus {
+  background: #ffffff;
+}
+
+.password-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-wrap input {
+  padding-left: 56px;
+}
+
+.toggle-pass {
+  position: absolute;
+  left: 10px;
+  background: transparent;
+  border: none;
+  color: var(--primary);
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+.toggle-pass:hover {
+  background: var(--primary-soft);
+}
+
+/* لمسات حركة خفيفة للأزرار والكروت */
+.btn-primary {
+  box-shadow: 0 4px 12px rgba(30, 64, 175, 0.2);
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(30, 64, 175, 0.26);
+}
+
+.stat-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+}
+
+.topbar {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(8px);
 }
